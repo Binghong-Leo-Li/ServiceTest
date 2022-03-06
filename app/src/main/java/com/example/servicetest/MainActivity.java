@@ -22,47 +22,47 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // checking if service has started
         pong = new BroadcastReceiver(){
             public void onReceive (Context context, Intent intent) {
                 serviceRunning = true;
             }
         };
-
         LocalBroadcastManager.getInstance(this).registerReceiver(pong, new IntentFilter("pong"));
         LocalBroadcastManager.getInstance(this).sendBroadcastSync(new Intent("ping"));
 
 
-
+        // linking buttons
         Button start = this.findViewById(R.id.start);
         Button stop = this.findViewById(R.id.stop);
-
         start.setOnClickListener(this::startClicked);
         stop.setOnClickListener(this::stopClicked);
 
 
-        if(!serviceRunning){
+        if(!serviceRunning){ // if service running
             start.setVisibility(View.VISIBLE);
             stop.setVisibility(View.GONE);
-        } else {
+        } else { // if not
             start.setVisibility(View.GONE);
             stop.setVisibility(View.VISIBLE);
         }
     }
 
 
-
     public void startClicked(View v) {
+
+        // update mainActivity
         Button start = this.findViewById(R.id.start);
         Button stop = this.findViewById(R.id.stop);
-
         start.setVisibility(View.GONE);
         stop.setVisibility(View.VISIBLE);
 
+        // Check build version to operate accordingly
         Intent serviceIntent = new Intent(this, MyService.class);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
+            // no need to use Foreground for older api versions
             startService(serviceIntent);
         }
 
@@ -70,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void stopClicked(View v) {
+
+        // update mainActivity
         Button start = this.findViewById(R.id.start);
         Button stop = this.findViewById(R.id.stop);
-
         start.setVisibility(View.VISIBLE);
         stop.setVisibility(View.GONE);
 
